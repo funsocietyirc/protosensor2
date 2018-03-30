@@ -7,6 +7,9 @@ Ticker serialDebugTicker(serialDebugTickerHandler, SERIAL_DEBUG_RATE);
 #endif
 
 #ifdef SERIAL_DEBUG
+/**
+ * Echo out MQTT messages over serial connection
+ */
 void serialDebugTickerHandler() {
   ++totalMqttMessages;
   snprintf(mqttMessage, 75, "hello world #%ld", totalMqttMessages);
@@ -16,6 +19,9 @@ void serialDebugTickerHandler() {
 
 #endif
 
+/**
+ * Handle Button Press
+ */
 void buttonHandler() {
   static unsigned long pressedMillis;
   static unsigned long ms;
@@ -30,9 +36,11 @@ void buttonHandler() {
     // Record time pressed
     pressedMillis = ms;
     // Publish basic on message
-    client.publish("protosensor2/button", "on");
+    client.publish(BUTTON_BASIC_TOPIC, BUTTON_DOWN_PAYLOAD);
+#ifdef BUTTON_BEEP_ON_PRESS
     // Turn on the beeper
     turnOn(BEEPER);
+#endif
   } else if (button.wasReleased()) {
     // Record the time between start and stop presses
     unsigned int results = ms - pressedMillis;
@@ -44,11 +52,13 @@ void buttonHandler() {
     resultsStr.toCharArray(output, resultsStrLength);
 
     // Send and reset the time pressed
-    client.publish("protosensor2/pressed", output);
+    client.publish(BUTTON_PRESSED_TOPIC, output);
     pressedMillis = 0;
     // Send basic off message
-    client.publish("protosensor2/button", "off");
+    client.publish(BUTTON_BASIC_TOPIC, BUTTON_UP_PAYLOAD);
+#ifdef BUTTON_BEEP_ON_PRESS
     // Turn off the beeper
     turnOff(BEEPER);
+#endif
   }
 }

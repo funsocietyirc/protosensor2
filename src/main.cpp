@@ -7,7 +7,7 @@
 void setup() {
 // Setup Serial
 #ifdef SERIAL_DEBUG
-  Serial.begin(115200);
+  Serial.begin(SERIAL_DEBUG_BAUD);
 #endif
 
   // Setup Network

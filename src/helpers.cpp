@@ -3,6 +3,12 @@
 byte shiftData = B00000000;
 byte previousShiftData = 0;
 
+void writeShiftData() {
+  digitalWrite(LOAD_PIN, LOW);
+  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, shiftData);
+  digitalWrite(LOAD_PIN, HIGH);
+}
+
 /**
  * Setup Pin modes
  */
@@ -11,21 +17,15 @@ void initializePins() {
   pinMode(LOAD_PIN, OUTPUT);
   pinMode(CLOCK_PIN, OUTPUT);
 
-  digitalWrite(LOAD_PIN, LOW);
-  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, shiftData);
-  digitalWrite(LOAD_PIN, HIGH);
+  writeShiftData();
 }
-
-void turnAllLedsOff() {}
 
 /**
  * Update Shift register
  */
 void updateShiftData() {
   if (previousShiftData != shiftData) {
-    digitalWrite(LOAD_PIN, LOW);
-    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, shiftData);
-    digitalWrite(LOAD_PIN, HIGH);
+    writeShiftData();
     previousShiftData = shiftData;
   }
 }
@@ -41,6 +41,12 @@ void clearPins() { shiftData = 0; }
  * @param value Value to update it to
  */
 void updatePin(pins pin, char *value) { bitWrite(shiftData, pin, value); }
+
+/**
+ * Update the shift register data
+ * @param registers
+ */
+void updateRegisters(byte registers) { shiftData = registers; }
 
 /**
  * Turn On a PIN

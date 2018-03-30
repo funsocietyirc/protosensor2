@@ -14,7 +14,7 @@ WiFiClient espClient;
  * Setup Wifi
  */
 void setupWifi() {
-  delay(10);
+  delay(STARTUP_DELAY);
 #ifdef SERIAL_DEBUG
   Serial.println();
   Serial.print("Connecting to ");
@@ -28,7 +28,7 @@ void setupWifi() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(5000);
+    delay(WIFI_CONNECT_DELAY);
 #ifdef SERIAL_DEBUG
     Serial.println("Connection Failed! Rebooting...");
 #endif
